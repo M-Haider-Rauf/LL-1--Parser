@@ -43,7 +43,7 @@ void LL1Parser::runLexer(const std::string& str, std::vector<unsigned>& outToks)
 		auto tokIter = terminals.find(tok);
 
 		if (tokIter == terminals.end()) {
-			std::cerr << "Unknown Token: " << tok << "\n";
+			std::cerr << "    Unknown Token: " << tok << "\n";
 			lexError = true;
 		}
 		else if (!lexError) {
@@ -66,17 +66,17 @@ void LL1Parser::runLL1Parser(const std::vector<unsigned>& input)
 	size_t inP = 0; //input pointer
 
 	if (table->isAmbigious()) {
-		std::cerr << "WARNING: Grammar is ambigious! May not parse correctly.\n";
+		std::cerr << "    WARNING: Grammar is ambigious! May not parse correctly.\n";
 	}
 
 	while (stack.top() != EOI_ID) {
 		if (stack.top() == input[inP]) {
-			std::cout << "MATCH: " << cfg->id2Term(stack.top()) << "\n";
+			std::cout << "    Match: " << cfg->id2Term(stack.top()) << "\n";
 			stack.pop();
 			++inP;
 		}
 		else if (cfg->isIdTerm(stack.top())) {
-			std::cerr << "PASRSE ERROR: Terminal on top of stack: " << cfg->id2Sym(stack.top()) << "\n";
+			std::cerr << "    PASRSE ERROR: Terminal on top of stack: " << cfg->id2Sym(stack.top()) << "\n";
 			break;
 		}
 		else if (table->getRuleFromTable(stack.top(), input[inP]).empty()) {
@@ -88,7 +88,7 @@ void LL1Parser::runLL1Parser(const std::vector<unsigned>& input)
 			const auto& ruleId = table->getRuleFromTable(stack.top(), input[inP]).front();
 			const auto& rule = cfg->getRules().find(ruleId.head)->second[ruleId.prodNo];
 
-			std::cout << "OUTPUT: " << table->ruleToString(ruleId) << "\n";
+			std::cout << "    Output: " << table->ruleIdToString(ruleId) << "\n";
 			stack.pop();
 
 		

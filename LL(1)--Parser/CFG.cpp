@@ -148,7 +148,10 @@ const Body& CFG::getStartProd() const
 
 void CFG::printInfo() const
 {
+	std::cout << "GRAMMAR\n";
 	for (auto rule : rules) {
+		std::cout << "    ";
+
 		std::cout << id2NonTerm(rule.first) << " -> ";
 
 		for (auto expr : rule.second) {
@@ -165,9 +168,9 @@ void CFG::printInfo() const
 
 
 	std::cout << "\n";
-	std::cout << "Start Symbol: " << id2NonTermMap[0] << "\n";
-	std::cout << "Terminals: " << termCnt << "\n";
-	std::cout << "Non-Terminals: " << nonTermCnt << "\n";
+	std::cout << "    Start Symbol: " << id2NonTermMap[0] << "\n";
+	std::cout << "    Terminals: " << termCnt << "\n";
+	std::cout << "    Non-Terminals: " << nonTermCnt << "\n";
 }
 
 void CFG::clear()

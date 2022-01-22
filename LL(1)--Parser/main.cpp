@@ -13,6 +13,8 @@ int main()
 	
 	//add rules to grammar
 	//separate symbols by spaces
+	//# is Empty string
+	//$ is reserved as End-of-Input
 	cfg.addRule("E -> T E'");
 	cfg.addRule("E' -> + T E' | #");
 	cfg.addRule("T -> F T'");
@@ -23,9 +25,15 @@ int main()
 	
 	gen.setCFG(&cfg);
 	gen.generateTable();
+
 	gen.printNullable();
+	std::cout << "\n";
+
 	gen.printFirst();
+	std::cout << "\n";
+
 	gen.printFollow();
+	std::cout << "\n";
 	
 	//string to parse
 	//separate tokens by spaces

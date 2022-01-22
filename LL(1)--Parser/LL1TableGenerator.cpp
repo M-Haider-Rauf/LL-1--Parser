@@ -33,7 +33,7 @@ void LL1TableGenerator::setCFG(CFG* cfg)
 	const unsigned termCnt = cfg->getTermCnt();
 
 	nullable = new int[nonTermCnt];
-	std::memset(nullable, 0xFF, nonTermCnt * sizeof(int));
+	std::memset(nullable, 0xFF, nonTermCnt * sizeof(int));  //set whole nullable array to -1
 
 	first = new std::unordered_set<unsigned>[nonTermCnt];
 	follow = new std::unordered_set<unsigned>[nonTermCnt];
@@ -272,18 +272,17 @@ void LL1TableGenerator::getExprFirst(const std::vector<unsigned>& expr, std::uno
 
 void LL1TableGenerator::printNullable() const
 {
-	std::cout << "**NULLABLE SETS**\n";
-
 	for (unsigned i = 0; i < cfg->getNonTermCnt(); ++i) {
-		std::cout << cfg->id2NonTerm(i + CFG::NONTERM_OFF) << "\t";
+		std::cout << "Nullable(";
+		std::cout << cfg->id2NonTerm(i + CFG::NONTERM_OFF) << "):\t";
 
 		int d = nullable[i];
 
 		if (d == 0) {
-			std::cout << "NO!";
+			std::cout << "No";
 		}
 		else if (d == 1) {
-			std::cout << "YES!";
+			std::cout << "Yes";
 		}
 		else {
 			std::cout << "N/A";
@@ -295,10 +294,9 @@ void LL1TableGenerator::printNullable() const
 
 void LL1TableGenerator::printFirst() const
 {
-	std::cout << "**FIRST SETS**\n";
-
 	for (unsigned i = 0; i < cfg->getNonTermCnt(); ++i) {
-		std::cout << cfg->id2NonTerm(i + CFG::NONTERM_OFF) << ":\t";
+		std::cout << "FIRST(";
+		std::cout << cfg->id2NonTerm(i + CFG::NONTERM_OFF) << "):\t";
 
 		const auto& set = first[i];
 
@@ -312,11 +310,9 @@ void LL1TableGenerator::printFirst() const
 
 void LL1TableGenerator::printFollow() const
 {
-
-	std::cout << "**FOLLOW SETS**\n";
-
 	for (unsigned i = 0; i < cfg->getNonTermCnt(); ++i) {
-		std::cout << cfg->id2NonTerm(i + CFG::NONTERM_OFF) << ":\t";
+		std::cout << "FOLLOW(";
+		std::cout << cfg->id2NonTerm(i + CFG::NONTERM_OFF) << "):\t";
 
 		const auto& set = follow[i] ;
 
@@ -335,10 +331,6 @@ void LL1TableGenerator::addRuleToTable(unsigned nonTerm, unsigned term, RuleID r
 
 	size_t yIdx = nonTerm - CFG::NONTERM_OFF;
 	size_t xIdx = term - EOI_ID;
-
-	/*
-	std::cout << "Table[" << cfg->getNonTermFromId(nonTerm) << ", " << cfg->getSymFromID(term) << "]\t=  ";
-	std::cout << ruleToString(ruleID) << "\n";*/
 
 	auto& cell = table[yIdx * offset + xIdx];
 	cell.push_back(ruleID);
@@ -381,7 +373,7 @@ void LL1TableGenerator::generateTable()
 
 			for (unsigned nt : first) {
 				if (nt != NULL_ID) {
-					addRuleToTable(head, nt, { head, prodNo });
+					addRuleToTable(head, nt, { head, (unsigned)prodNo });
 				}
 			}
 
@@ -389,7 +381,7 @@ void LL1TableGenerator::generateTable()
 				const auto& followHead = follow[head - CFG::NONTERM_OFF];
 
 				for (unsigned nt : followHead) {
-					addRuleToTable(head, nt, { head, prodNo });
+					addRuleToTable(head, nt, { head, (unsigned)prodNo });
 				}
 			}
 		}
@@ -417,7 +409,7 @@ void LL1TableGenerator::printTable() const
 
 			
 			for (auto ruleID : ruleIDs) {
-				std::cout << ruleToString(ruleID);
+				std::cout << ruleIdToString(ruleID);
 			}
 
 			std::cout << "\t";
@@ -427,9 +419,8 @@ void LL1TableGenerator::printTable() const
 	}
 }
 
-std::string LL1TableGenerator::ruleToString(RuleID ruleId) const
+std::string LL1TableGenerator::ruleIdToString(RuleID ruleId) const
 {
-
 	std::string str;
 
 	const auto& rule = *(cfg->getRules().find(ruleId.head));
