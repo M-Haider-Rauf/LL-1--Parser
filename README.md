@@ -14,6 +14,7 @@ Since I wanted to focus on the parsing part, and not lexing there are some rules
 
 # Screenshots
 ![img1](https://i.ibb.co/fQTxdvT/Screenshot-192.png) ![img2](https://i.ibb.co/xYGRwFZ/Screenshot-193.png)
+![img3](https://i.ibb.co/M9mHHg8/Screenshot-195.png)
 
 
 
